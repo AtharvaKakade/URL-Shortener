@@ -1,0 +1,34 @@
+name: CI Workflow
+
+on:
+  push:
+    branches:
+      - main  # Trigger the workflow on push to the main branch
+  pull_request:
+    branches:
+      - main  # Trigger workflow on pull requests to main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Define the environment to run the workflow on
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2  # Checks out the code in the repository
+
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'  # Set the Java version for your project
+
+      - name: Build with Maven
+        run: mvn clean install  # Build your project using Maven
+
+      - name: Run Tests
+        run: mvn test  # Run the tests after building the project
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-results
+          path: target/test-*.xml  # Uploads test results as artifacts
